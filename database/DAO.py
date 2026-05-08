@@ -14,7 +14,7 @@ class DAO():
         result = []
 
         cursor = conn.cursor(dictionary=True)
-        query = """ ADD YOUR QUERY """
+        query = """SELECT * FROM Nerc"""
 
         cursor.execute(query)
 
@@ -28,11 +28,9 @@ class DAO():
     @staticmethod
     def getAllEvents(nerc):
         conn = DBConnect.get_connection()
-
         result = []
-
         cursor = conn.cursor(dictionary=True)
-        query = """ ADD YOUR QUERY """
+        query = """ SELECT * FROM PowerOutages WHERE nerc_id = %s"""
 
         cursor.execute(query, (nerc.id,))
 
@@ -47,3 +45,20 @@ class DAO():
         cursor.close()
         conn.close()
         return result
+
+    @staticmethod
+    def getNerc(_id):
+        conn = DBConnect.get_connection()
+
+        result = []
+
+        cursor = conn.cursor(dictionary=True)
+        query = """SELECT * FROM Nerc WHERE id = %s"""
+
+        cursor.execute(query, (_id,))
+        for row in cursor:
+            result.append(Nerc(row["id"], row["value"]))
+
+        cursor.close()
+        conn.close()
+        return result[0]

@@ -1,5 +1,5 @@
 import flet as ft
-
+from database.DAO import DAO
 from model.nerc import Nerc
 
 
@@ -13,14 +13,24 @@ class Controller:
         self.fillIDMap()
 
     def handleWorstCase(self, e):
-        # TO FILL
-        pass
+        nerc = DAO.getNerc(self._view._ddNerc.value)
+        maxX = float(self._view._txtYears.value)
+        maxY = float(self._view._txtHours.value)
+
+        soluzione, customers, tot_hours = self._model.worstCase(nerc, maxX, maxY)
+        self._view._txtOut.controls.append(
+                ft.Text(f"Tot people affected: {customers}\nTot hours of outage: {tot_hours}"))
+        self._view.update_page()
+        for e in soluzione:
+            self._view._txtOut.controls.append(
+                ft.Text(e))
+            self._view.update_page()
 
     def fillDD(self):
         nercList = self._model.listNerc
 
         for n in nercList:
-            self._view._ddNerc.options.append(ft.dropdown.Option(n))
+            self._view._ddNerc.options.append(ft.dropdown.Option(key = n._id, text = n._value))
         self._view.update_page()
 
     def fillIDMap(self):
